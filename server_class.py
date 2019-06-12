@@ -40,12 +40,13 @@ class Server(Thread):
     listen = property(_get_listen,_set_listen)
 
 
-p = Server('0.0.0.0',80,5)
+p = Server('127.0.0.1',80,5)
 client,conn = p.run()
 msg_recv=b""
 while msg_recv != b"end":
     msg_recv = client.recv(1024)
     print(msg_recv.decode())
-    client.send(b"end")
-client.close()
-p.stop()
+    if msg_recv == b"end":
+        client.send(b"end")
+        client.close()
+        p.stop()
